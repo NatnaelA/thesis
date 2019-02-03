@@ -36,7 +36,7 @@ while x < len(file):
                 with open(os.path.join(line+'/_sent_mail',sent[i]),'r') as f:
             
                     f_contents=f.readlines()
-                   # if(f_contents[3][:2]=='To'):
+                   
                     
                     
                     r=3
