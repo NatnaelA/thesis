@@ -21,7 +21,6 @@ temp=[]
 
 t=3
 
-
 pairs=[]
 ap = argparse.ArgumentParser(description='directory to the email folder')
 ap.add_argument('input directory',help='Directroy of input files', default='C:/Users/Natna/Downloads/enron_mail_20150507.tar/maildir/')
