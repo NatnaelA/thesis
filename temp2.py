@@ -23,10 +23,11 @@ t=3
 
 pairs=[]
 ap = argparse.ArgumentParser(description='directory to the email folder')
-ap.add_argument('input directory',help='Directroy of input files', default='C:/Users/Natna/Downloads/enron_mail_20150507.tar/maildir/')
+ap.add_argument('--input', help='Directroy of input files', default='C:/Users/Natna/Downloads/enron_mail_20150507.tar/maildir/', required = False)
 
 args = vars(ap.parse_args())
-file=os.listdir(args['input directory'])
+
+file=os.listdir(args['input'])
 #file=directory
 while x < len(file):
     
@@ -34,20 +35,19 @@ while x < len(file):
     
     
     #  os.path.isdir(line+'/inboxadfad'
-    if (os.path.isdir(args['input directory']+'/'+line+'/_sent_mail')):
+    if (os.path.isdir(args['input']+'/'+line+'/_sent_mail')):
         
-        sent=os.listdir(args['input directory']+'/'+line + '/_sent_mail')
+        sent=os.listdir(args['input']+'/'+line + '/_sent_mail')
         while i<len(sent):
             pairs=[]
-            if(os.path.isfile(args['input directory']+'/'+line+'/_sent_mail'+"/"+sent[i])):
-                with open(os.path.join(args['input directory']+'/'+line+'/_sent_mail',sent[i]),'r') as f:
+            if(os.path.isfile(args['input']+'/'+line+'/_sent_mail'+"/"+sent[i])):
+                with open(os.path.join(args['input']+'/'+line+'/_sent_mail',sent[i]),'r') as f:
             
                     f_contents=f.readlines()
                    
         
                         
-                        
-                       
+        
                         
                    # if(f_contents[3][:2]=='To'):
                     
@@ -63,6 +63,7 @@ while x < len(file):
                             
                             k=0
                             while(k<len(temp)):
+                                temp[k] = temp[k].strip()
                                 if(temp[k] != ''):
                                #pairs=[]
                                    f_contents[2]=f_contents[2].strip()
@@ -77,7 +78,7 @@ while x < len(file):
                                    pairs=[]
                                    k=k+1
                                 else:
-                                    print(temp[k])
+                                    #print(temp[k])
                                     k=k+1
                                      
                                
@@ -117,3 +118,8 @@ while x < len(file):
     else:
                    
         x=x+1
+
+
+# print edge list
+
+
