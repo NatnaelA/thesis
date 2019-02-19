@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on Mon Sep 24 16:40:52 2018
 
@@ -47,12 +46,12 @@ for line in file:
             
                     f_contents=f.readlines()
                    
-                    f_content[1][5:22]
+        
                         
         
                         
-                   
-                
+                   # if(f_contents[3][:2]=='To'):
+                #range for dates
                     
                     r=3
                     while(not("Subject:" in f_contents[r])):
@@ -68,25 +67,22 @@ for line in file:
                                 employee = employee.strip()
                                 if(employee != ''):
                                #pairs=[]
-                                   f_contents[2]=f_contents[2].strip()
+                                   f_contents[2].strip()
                                    f_contents[2]=f_contents[2].strip('From: ')
                                    pairs.append(f_contents[2])
                                    employee=employee.strip()
                                    employee=employee.strip('To: ')
-                                   pairs.append(employee])
+                                   pairs.append(employee)
                                    pairs.append(email)
                                    larg_pair.append(pairs)
                                    
                                    pairs=[]
-                                   k=k+1
-                                else:
-                                    #print(temp[k])
-                                    k=k+1
+                                   
                                      
                                
                        else:
                                if(f_contents[r] != ''):
-                                    f_contents[2]=f_contents[2].strip()
+                                    f_contents[2].strip()
                                     f_contents[2]=f_contents[2].strip('From: ')
                                     pairs.append(f_contents[2])
                                     
@@ -99,17 +95,24 @@ for line in file:
                                     r=r+1
                                 
                                 
-        
+                                
+                       
+                       
+                    
+                       
                        
                        
                        r=r+1
                       
-    
-with open(args['input']+'/'+'edgelist.csv','w+') as list:
-    for item in larg_pair:
-        list.write(str(item)+'\n')
+            
+                   # else:
+                        
+                    #    i=i+1
         
 
-# print edge list
 
+# print edge list
+with open(args['output']+'/'+'edgelist.csv','w+') as list:
+    for item in larg_pair:
+        list.write(str(item)+'\n')
 
