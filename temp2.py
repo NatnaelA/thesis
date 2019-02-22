@@ -23,7 +23,7 @@ pairs=[]
 ap = argparse.ArgumentParser(description='directory to the email folder')
 ap.add_argument('--input', help='Directroy of input files', default='C:/Users/Natna/Downloads/enron_mail_20150507.tar/maildir/', required = False)
 ap.add_argument('--output', help='Directroy of output files', default='C:/Users/Natna/Documents', required = False)
-ap.add_argument('--startdate', help='start date of range', default='1 1 1999', required = False)
+ap.add_argument('--startdate', help='start date of range', default='1 1 2001', required = False)
 ap.add_argument('--enddate', help='end date of range', default='31 1 2001', required = False)
 args = vars(ap.parse_args())
 split_start_date=args['startdate'].split()
@@ -85,9 +85,9 @@ for line in file:
                                 employee = employee.strip()
                                 if(employee != ''):
                                #pairs=[]
-                                   #f_contents[2].strip()
+                                   f_contents[2]=f_contents[2].strip('\n')
                                    f_contents[2]=f_contents[2].strip('From: ')
-                                   pairs.append(f_contents[2]+'om')
+                                   pairs.append(f_contents[2])
                                    employee=employee.strip()
                                    employee=employee.strip('To: ')
                                    pairs.append(employee)
@@ -100,9 +100,9 @@ for line in file:
                                
                        else:
                                if(f_contents[r] != ''):
-                                    #f_contents[2].strip()
+                                    f_contents[2]=f_contents[2].strip('\n')
                                     f_contents[2]=f_contents[2].strip('From: ')
-                                    pairs.append(f_contents[2]+'om')
+                                    pairs.append(f_contents[2])
                                     
                                     f_contents[r]=f_contents[r].strip()
                                     f_contents[r]=f_contents[r].strip('To: ')
