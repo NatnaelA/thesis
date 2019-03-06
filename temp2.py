@@ -33,25 +33,32 @@ joined_end_date=', '.join(split_end_date)
 start_date=datetime.strptime( joined_start_date,'%d, %m, %Y')
 end_date=datetime.strptime( joined_end_date,'%d, %m, %Y')
 dates=[]
-file=os.listdir(args['input'])
 #file=directory
 
 if(not(os.path.isdir(args['input']))):
+    print()
     print("Inputting data from: "+args['input'])
     print("Invalid input directory. Please specifiy correct input path to email dataset")
+    print()
+    ap.print_help()
     exit()
 if(not(os.path.isdir(args['output']))):
-    print("Outputting result to: "+args['output'])
+    print()
+    print("Outputting result to directory: "+args['output'])
     print("Invalid output directory. Please specifiy correct output path for result set")
+    print()
+    ap.print_help()
     exit()
+file=os.listdir(args['input'])
+
+numFiles = 0
+numProcessed = 0
+
 for line in file:
-    
-    
-    
-    
-    
+    numFiles += 1 
+    print("checking folder #", numFiles, ': ', line, sep = '')
     if (os.path.isdir(args['input']+'/'+line+'/_sent_mail')):
-        
+        numProcessed += 1
         sent=os.listdir(args['input']+'/'+line + '/_sent_mail')
         for email in sent:
             pairs=[]
@@ -109,9 +116,13 @@ for line in file:
                             r=r+1
                       
             
-       
+print()
+print("Number of folders searched: ", numFiles)
+print("Number of folders processed: ", numProcessed)
+print("Number of folders skipped: ", numFiles - numProcessed)
+print()
 
-    
+print("outputting edge list to:", args['output'] + '/edgelist.csv')
 with open(args['output']+'/'+'edgelist.csv','w+') as list:
    for item in larg_pair:
        edge_list=', '.join(item)
