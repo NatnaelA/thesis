@@ -23,7 +23,7 @@ pairs=[]
 ap = argparse.ArgumentParser(description='directory to the email folder')
 ap.add_argument('--input', help='Directroy of input files', default='C:/Users/Natna/Downloads/enron_mail_20150507.tar/maildir/', required = False)
 ap.add_argument('--output', help='Directroy of output files', default='C:/Users/Natna/Documents', required = False)
-ap.add_argument('--startdate', help='start date of range', default='1 1 2001', required = False)
+ap.add_argument('--startdate', help='start date of range', default='1 1 1997', required = False)
 ap.add_argument('--enddate', help='end date of range', default='31 1 2001', required = False)
 args = vars(ap.parse_args())
 split_start_date=args['startdate'].split()
@@ -35,12 +35,21 @@ end_date=datetime.strptime( joined_end_date,'%d, %m, %Y')
 dates=[]
 file=os.listdir(args['input'])
 #file=directory
+
+if(not(os.path.isdir(args['input']))):
+    print("Inputting data from: "+args['input'])
+    print("Invalid input directory. Please specifiy correct input path to email dataset")
+    exit()
+if(not(os.path.isdir(args['output']))):
+    print("Outputting result to: "+args['output'])
+    print("Invalid output directory. Please specifiy correct output path for result set")
+    exit()
 for line in file:
     
     
     
     
-    #  os.path.isdir(line+'/inboxadfad'
+    
     if (os.path.isdir(args['input']+'/'+line+'/_sent_mail')):
         
         sent=os.listdir(args['input']+'/'+line + '/_sent_mail')
@@ -67,14 +76,13 @@ for line in file:
                         
             if(start_date<=email_date and email_date<=end_date ):
                         
-                   #if(f_contents[3][:2]=='To'):
-                #range for dates
+                  
                     
                     r=3
                     while(not("Subject:" in f_contents[r])):
                        
                       
-                       if("," in f_contents[r]):
+                       
                             f_contents[r].strip('\t')
                             
                             
@@ -84,52 +92,26 @@ for line in file:
                             for employee in temp:
                                 employee = employee.strip()
                                 if(employee != ''):
-                               #pairs=[]
+                               
                                    f_contents[2]=f_contents[2].strip('\n')
-                                   f_contents[2]=f_contents[2].strip('From: ')
+                                   f_contents[2]=f_contents[2].replace('From: ','')
                                    pairs.append(f_contents[2])
                                    employee=employee.strip()
-                                   employee=employee.strip('To: ')
+                                   employee=employee.replace('To: ','')
                                    pairs.append(employee)
                                    pairs.append(email)
                                    larg_pair.append(pairs)
                                    
                                    pairs=[]
                                    
-                                     
-                               
-                       else:
-                               if(f_contents[r] != ''):
-                                    f_contents[2]=f_contents[2].strip('\n')
-                                    f_contents[2]=f_contents[2].strip('From: ')
-                                    pairs.append(f_contents[2])
-                                    
-                                    f_contents[r]=f_contents[r].strip()
-                                    f_contents[r]=f_contents[r].strip('To: ')
-                                    pairs.append(f_contents[r])
-                                    pairs.append(email)
-                                    larg_pair.append(pairs)
-                               else:
-                                    r=r+1
-                                
-                                
-                                
                        
                        
-                    
-                       
-                       
-                       
-                       r=r+1
+                            r=r+1
                       
             
-                   # else:
-                        
-                    #    i=i+1
-        
+       
 
-
-# print edge list
+    
 with open(args['output']+'/'+'edgelist.csv','w+') as list:
    for item in larg_pair:
        edge_list=', '.join(item)
