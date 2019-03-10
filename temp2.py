@@ -33,30 +33,47 @@ joined_end_date=', '.join(split_end_date)
 start_date=datetime.strptime( joined_start_date,'%d, %m, %Y')
 end_date=datetime.strptime( joined_end_date,'%d, %m, %Y')
 dates=[]
-file=os.listdir(args['input'])
 #file=directory
 
 if(not(os.path.isdir(args['input']))):
+    print()
     print("Inputting data from: "+args['input'])
     print("Invalid input directory. Please specifiy correct input path to email dataset")
+    print()
+    ap.print_help()
     exit()
 if(not(os.path.isdir(args['output']))):
-    print("Outputting result to: "+args['output'])
+    print()
+    print("Outputting result to directory: "+args['output'])
     print("Invalid output directory. Please specifiy correct output path for result set")
+    print()
+    ap.print_help()
     exit()
+file=os.listdir(args['input'])
+
+from collections import defaultdict
+sendDict = defaultdict(set)
+
+numFiles = 0
+numProcessed = 0
+
 for line in file:
+    numFiles += 1 
+    print("checking folder #", numFiles, ': ', line, sep = '')
+
+    sent_mail = args['input']+'/'+line+'/_sent_mail'
     
-    
-    
-    
-    
-    if (os.path.isdir(args['input']+'/'+line+'/_sent_mail')):
+    if (not os.path.isdir(sent_mail)): 
+        print("no sent mail for:", line)
         
-        sent=os.listdir(args['input']+'/'+line + '/_sent_mail')
+
+    if (os.path.isdir(sent_mail)):
+        numProcessed += 1
+        sent=os.listdir(sent_mail)
         for email in sent:
             pairs=[]
-            if(os.path.isfile(args['input']+'/'+line+'/_sent_mail'+"/"+email)):
-                with open(os.path.join(args['input']+'/'+line+'/_sent_mail',email),'r') as f:
+            if(os.path.isfile(sent_mail +"/"+email)):
+                with open(os.path.join(sent_mail,email),'r') as f:
             
                     f_contents=f.readlines()
                     
@@ -74,7 +91,7 @@ for line in file:
                                 
                                 break 
                         
-            if(start_date<=email_date and email_date<=end_date ):
+                if(start_date<=email_date and email_date<=end_date ):
                         
                   
                     
@@ -96,6 +113,8 @@ for line in file:
                                    f_contents[2]=f_contents[2].strip('\n')
                                    f_contents[2]=f_contents[2].replace('From: ','')
                                    pairs.append(f_contents[2])
+                                   sendDict[line].add(f_contents[2])
+
                                    employee=employee.strip()
                                    employee=employee.replace('To: ','')
                                    pairs.append(employee)
@@ -109,11 +128,18 @@ for line in file:
                             r=r+1
                       
             
-       
+print()
+print("Number of folders searched: ", numFiles)
+print("Number of folders processed: ", numProcessed)
+print("Number of folders skipped: ", numFiles - numProcessed)
+print()
 
-    
+print("outputting edge list to:", args['output'] + '/edgelist.csv')
 with open(args['output']+'/'+'edgelist.csv','w+') as list:
    for item in larg_pair:
        edge_list=', '.join(item)
        list.write(edge_list+'\n')
+
+for senders in sendDict :
+    print(senders, ":" , sendDict[senders])
 
