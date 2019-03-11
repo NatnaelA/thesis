@@ -56,76 +56,77 @@ sendDict = defaultdict(set)
 
 numFiles = 0
 numProcessed = 0
-
+all_sent=[]
+all_sent=['/sent','/_sent_mail','/sent_items']
 for line in file:
     numFiles += 1 
-    print("checking folder #", numFiles, ': ', line, sep = '')
-
-    sent_mail = args['input']+'/'+line+'/_sent_mail'
-    
-    if (not os.path.isdir(sent_mail)): 
-        print("no sent mail for:", line)
+    print("checking folder #", numFiles, ': ', line)
+    for directory in all_sent:
+        sent_mail = args['input']+'/'+line+directory
         
-
-    if (os.path.isdir(sent_mail)):
-        numProcessed += 1
-        sent=os.listdir(sent_mail)
-        for email in sent:
-            pairs=[]
-            if(os.path.isfile(sent_mail +"/"+email)):
-                with open(os.path.join(sent_mail,email),'r') as f:
-            
-                    f_contents=f.readlines()
-                    
+        if (not os.path.isdir(sent_mail)): 
+            print("no "+directory +" folder for:", line)
+            continue
+    
+        if (os.path.isdir(sent_mail)):
+            numProcessed += 1
+            sent=os.listdir(sent_mail)
+            for email in sent:
+                pairs=[]
+                if(os.path.isfile(sent_mail +"/"+email)):
+                    with open(os.path.join(sent_mail,email),'r') as f:
+                
+                        f_contents=f.readlines()
                         
-                    blocks=f_contents[1].split()
-                    for thing in blocks:
-                        for i in range(1,13):
-                        
-                            if thing == month[i]:
-                                
-                                blocks[3]=str(i)
-                                temp_date=', '.join(blocks[2:5])
-                                email_date=datetime.strptime(temp_date ,'%d, %m, %Y')
-                                
-                                
-                                break 
-                        
-                if(start_date<=email_date and email_date<=end_date ):
-                        
-                  
-                    
-                    r=3
-                    while(not("Subject:" in f_contents[r])):
-                       
+                            
+                        blocks=f_contents[1].split()
+                        for thing in blocks:
+                            for i in range(1,13):
+                            
+                                if thing == month[i]:
+                                    
+                                    blocks[3]=str(i)
+                                    temp_date=', '.join(blocks[2:5])
+                                    email_date=datetime.strptime(temp_date ,'%d, %m, %Y')
+                                    
+                                    
+                                    break 
+                            
+                    if(start_date<=email_date and email_date<=end_date ):
+                            
                       
-                       
-                            f_contents[r].strip('\t')
-                            
-                            
-                            temp=f_contents[r].split(',')
-                            
-                            k=0
-                            for employee in temp:
-                                employee = employee.strip()
-                                if(employee != ''):
-                               
-                                   f_contents[2]=f_contents[2].strip('\n')
-                                   f_contents[2]=f_contents[2].replace('From: ','')
-                                   pairs.append(f_contents[2])
-                                   sendDict[line].add(f_contents[2])
-
-                                   employee=employee.strip()
-                                   employee=employee.replace('To: ','')
-                                   pairs.append(employee)
-                                   pairs.append(email)
-                                   larg_pair.append(pairs)
+                        
+                        r=3
+                        while(not("Subject:" in f_contents[r])):
+                           
+                          
+                           
+                                f_contents[r].strip('\t')
+                                
+                                
+                                temp=f_contents[r].split(',')
+                                
+                                k=0
+                                for employee in temp:
+                                    employee = employee.strip()
+                                    if(employee != ''):
                                    
-                                   pairs=[]
-                                   
-                       
-                       
-                            r=r+1
+                                       f_contents[2]=f_contents[2].strip('\n')
+                                       f_contents[2]=f_contents[2].replace('From: ','')
+                                       pairs.append(f_contents[2])
+                                       sendDict[line].add(f_contents[2])
+    
+                                       employee=employee.strip()
+                                       employee=employee.replace('To: ','')
+                                       pairs.append(employee)
+                                       pairs.append(email)
+                                       larg_pair.append(pairs)
+                                       
+                                       pairs=[]
+                                       
+                           
+                           
+                                r=r+1
                       
             
 print()
