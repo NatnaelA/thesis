@@ -132,7 +132,6 @@ for line in file:
 print()
 print("Number of folders searched: ", numFiles)
 print("Number of folders processed: ", numProcessed)
-print("Number of folders skipped: ", numFiles - numProcessed)
 print()
 
 print("outputting edge list to:", args['output'] + '/edgelist.csv')
