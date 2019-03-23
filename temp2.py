@@ -11,10 +11,12 @@ from datetime import datetime
 #os.chdir('C:/Users/Natna/Downloads/enron_mail_20150507.tar/maildir/')
 
 
-
+emails=[]
 ap = argparse.ArgumentParser(description='directory to the email folder')
-ap.add_argument('--input', help='Directroy of input files', default='C:/Users/Natna/Downloads/enron_mail_20150507.tar/maildir/', required = False)
-ap.add_argument('--output', help='Directroy of output files', default='C:/Users/Natna/Documents', required = False)
+#ap.add_argument('--input', help='Directroy of input files', default='C:/Users/Natna/Downloads/enron_mail_20150507.tar/maildir/', required = False)
+ap.add_argument('--input', help='Directroy of input files', default=r'C:\Users\belayn\OneDrive - Eastern Connecticut State University\enron_mail_20150507\maildir', required = False)
+#ap.add_argument('--output', help='Directroy of output files', default='C:/Users/Natna/Documents', required = False)
+ap.add_argument('--output', help='Directroy of output files', default=r'C:\Users\belayn\OneDrive - Eastern Connecticut State University\enron_mail_20150507', required = False)
 ap.add_argument('--startdate', help='start date of range', default='1 1 1997', required = False)
 ap.add_argument('--enddate', help='end date of range', default='31 1 2001', required = False)
 args = vars(ap.parse_args())
@@ -49,12 +51,12 @@ sendDict = defaultdict(set)
 numFiles = 0
 numProcessed = 0
 all_sent=[]
-all_sent=['/sent','/_sent_mail','/sent_items']
+all_sent=['\\sent','\\_sent_mail','\\sent_items']
 for line in file:
     numFiles += 1 
     print("checking folder #", numFiles, ': ', line)
     for directory in all_sent:
-        sent_mail = args['input']+'/'+line+directory
+        sent_mail = args['input']+'\\'+line+directory
         
         if (not os.path.isdir(sent_mail)): 
             print("no "+directory +" folder for:", line)
@@ -64,10 +66,11 @@ for line in file:
             numProcessed += 1
             sent=os.listdir(sent_mail)
             for email in sent:
-                pairs=[]
-                if(os.path.isfile(sent_mail +"/"+email)):
-                   parse_Email(sent_mail +"/"+email,['To','From','subject','body',{'start_date':start_date,'end_date':end_date}])
-                            
+               
+                if(os.path.isfile(sent_mail +"\\"+email)):
+                   
+                   parse_Email.parseEmail(sent_mail +"\\"+email,['To','From','subject','body',{'start_date':start_date,'end_date':end_date}])
+                   
         
                              
                    
@@ -82,10 +85,10 @@ print()
 
 print("outputting edge list to:", args['output'] + '/edgelist.csv')
 with open(args['output']+'/'+'edgelist.csv','w+') as list:
-   for item in parse_Email.large_pair:
+   for item in parse_Email.larg_pair:
        edge_list=', '.join(item)
        list.write(edge_list+'\n')
-print('This is the subject'+parse_Email.subject)
+#print('This is the subject'+parse_Email.subject[-1])
 print('This is the body'+parse_Email.body)
 for senders in sendDict :
     print(senders, ":" , sendDict[senders])
