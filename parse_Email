@@ -14,23 +14,24 @@ body=''
 from datetime import datetime
 month={1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'}
 def parseEmail(fileName,value):
+    
     with open(fileName,'r') as f:
              f_contents=f.readlines()
-                       
+                      
             
-             if 'startDate' and 'endDate' in value:
-                        blocks=f_contents[1].split()
-                        for thing in blocks:
-                            for i in range(1,13):
+             
+             blocks=f_contents[1].split()
+             for thing in blocks:
+                 for i in range(1,13):
                             
-                                if thing == month[i]:
+                     if thing == month[i]:
                                     
-                                    blocks[3]=str(i)
-                                    temp_date=', '.join(blocks[2:5])
-                                    email_date=datetime.strptime(temp_date ,'%d, %m, %Y')
+                         blocks[3]=str(i)
+                         temp_date=', '.join(blocks[2:5])
+                         email_date=datetime.strptime(temp_date ,'%d, %m, %Y')
                                     
                                     
-                                    break 
+                         break 
              for item in value:
                      if type(item) is dict:
                          start_date=item['start_date']
@@ -39,8 +40,9 @@ def parseEmail(fileName,value):
              r=3
              if (email_date>=start_date and email_date<=end_date):
                  pairs=[]
+                 
                  if 'To' and 'From' in value:
-                     
+                        
                         while(not("Subject:" in f_contents[r])):
                                
                               
@@ -60,25 +62,25 @@ def parseEmail(fileName,value):
                                            From.append(f_contents[2])
                                            pairs.append(f_contents[2])
                                            
-                                           if(f_contents[3][0:2] is'To'):
-                                               employee=employee.strip()
-                                               employee=employee.replace('To: ','')
-                                               to.append(employee)
-                                               pairs.append(employee)
+                                           employee=employee.strip()
+                                           employee=employee.replace('To: ','')
+                                           to.append(employee)
+                                           pairs.append(employee)
                                                
-                                               larg_pair.append(pairs)
+                                           larg_pair.append(pairs)
+                                           
+                                           
+                                           pairs=[]
                                                
-                                               pairs=[]
-                                               
-                                           else:
-                                                break
+                                    
                                
                                     r=r+1
                  if 'Subject' in value:
                     for line in f_contents:
                         if 'Subject:' in line:
                             subject.append(line)
-                            
+                            print("adding the subject")
+                            print(len(subject))
                             break
                  if 'Body' in value:
                     x=  f_contents.index['\n']
