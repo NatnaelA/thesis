@@ -7,10 +7,10 @@ Created on Fri Mar 22 19:40:28 2019
 to=[]
 
 From=[]
-
+date=[]
 larg_pair=[]
 subject=[]
-body=''
+contents=[]
 from datetime import datetime
 month={1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'}
 def parseEmail(fileName,value):
@@ -29,7 +29,7 @@ def parseEmail(fileName,value):
                          blocks[3]=str(i)
                          temp_date=', '.join(blocks[2:5])
                          email_date=datetime.strptime(temp_date ,'%d, %m, %Y')
-                                    
+                         date.append(email_date)           
                                     
                          break 
              for item in value:
@@ -78,12 +78,14 @@ def parseEmail(fileName,value):
                  if 'Subject' in value:
                     for line in f_contents:
                         if 'Subject:' in line:
+                           # line=line.replace("Subject: ", "")
                             subject.append(line)
-                            print("adding the subject")
-                            print(len(subject))
+                            
                             break
+                 body=''
                  if 'Body' in value:
-                    x=  f_contents.index['\n']
+                    x=  f_contents.index('\n')
                     for i in  range(x,len(f_contents)):
                         body=body+ f_contents[i]
+                    contents.append(body)
                           
