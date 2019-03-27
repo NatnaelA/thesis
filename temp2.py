@@ -69,7 +69,7 @@ for line in file:
                
                 if(os.path.isfile(sent_mail +"\\"+email)):
                    
-                   parse_Email.parseEmail(sent_mail +"\\"+email,['To','From','Subject','Body',{'start_date':start_date,'end_date':end_date}])
+                   parse_Email.parseEmail(sent_mail +"\\"+email,['Subject','Body',{'start_date':start_date,'end_date':end_date}])
                    
         
                              
