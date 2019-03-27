@@ -4,8 +4,9 @@ Created on Fri Mar 22 19:40:28 2019
 
 @author: Natna
 """
-to=[]
 
+import temp
+to=[]
 From=[]
 date=[]
 larg_pair=[]
@@ -32,13 +33,13 @@ def parseEmail(fileName,value):
                          date.append(email_date)           
                                     
                          break 
-             for item in value:
-                     if type(item) is dict:
-                         start_date=item['start_date']
-                         end_date=item['end_date']
-                         break;
+#             for item in value:
+#                     if type(item) is dict:
+#                         start_date=item['start_date']
+#                         end_date=item['end_date']
+#                         break;
              r=3
-             if (email_date>=start_date and email_date<=end_date):
+             if (email_date>=temp.start_date and email_date<=temp.end_date):
                  pairs=[]
                  
                  if 'To' and 'From' in value:
@@ -50,10 +51,10 @@ def parseEmail(fileName,value):
                                     f_contents[r].strip('\t')
                                     
                                     
-                                    temp=f_contents[r].split(',')
+                                    temp1=f_contents[r].split(',')
                                     
                                     
-                                    for employee in temp:
+                                    for employee in temp1:
                                         employee = employee.strip()
                                         if(employee != ''):
                                        
