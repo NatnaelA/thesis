@@ -1,0 +1,40 @@
+import os
+import parse_Email
+from collections import defaultdict
+emails=defaultdict(list) 
+all_sent=['\\sent','\\_sent_mail','\\sent_items','\\_sent']
+def parse_Emails(folderName, value):
+    file=os.listdir(folderName)
+    for line in file:
+        for directory in all_sent:
+            sent_mail=folderName+'\\'+directory
+            if (not os.path.isdir(sent_mail)): 
+
+                print("no "+directory +" folder for:", folderName[34:])
+
+                continue
+            sent=os.listdir(sent_mail)
+            
+            for email in sent:
+                #if((os.path.isfile(sent_mail +"\\"+email)):
+              u=parse_Email.parseEmail(sent_mail +"\\"+email,value)
+              if u['Subject'] not None:
+                  emails['Subject'].append(u['Subject'])
+              if u['To'] not None:
+                  emails['To'].append(u['To'])
+              if u['From'] not None:
+                  emails['From'].append(set(u['From']))
+              if u['Body'] not None:
+                  emails['Body'].append(u['Body'])
+              if u['Date'] not None:
+                  emails['Date'].append(u['Date'])
+              print(emails)
+    #return emails
+       
+    
+       
+    
+    
+
+
+                   
