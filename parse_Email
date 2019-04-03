@@ -14,12 +14,13 @@ subject=[]
 contents=[]
 test=[]
 from collections import defaultdict
-emails = defaultdict(list)
+email = defaultdict(set)
 
 from datetime import datetime
 month={1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'}
 def parseEmail(fileName,value):
-   
+    if value is None:
+       value=['Subject','Date','To', 'From','Body']
     
     
     
@@ -43,8 +44,8 @@ def parseEmail(fileName,value):
                          temp_date=', '.join(blocks[2:5])
                          email_date=datetime.strptime(temp_date ,'%d, %m, %Y')
                          
-                        
-                         emails['Date'].append(email_date)
+                         if('Date' in value):
+                                 email['Date'].add(email_date)
                          
                          break 
              for item in value:
@@ -81,12 +82,14 @@ def parseEmail(fileName,value):
                                            employee=employee.replace('To: ','')
                                            to.append(employee)
                                            pairs.append(employee)
-                                           emails['To'].append(employee)   
+                                           if 'To' in value:
+                                               email['To'].add(employee)   
                                            larg_pair.append(pairs)
                                            
                                            
                                            pairs=[]
-                                    emails['From'].append(f_contents[2])
+                                    if 'From' in value:
+                                        email['From'].add(f_contents[2])
                                     
                                     
                                
@@ -96,7 +99,7 @@ def parseEmail(fileName,value):
                         if 'Subject:' in line:
                            # line=line.replace("Subject: ", "")
                             subject.append(line)
-                            emails['Subject']=line
+                            email['Subject'].add(line)
                             
                             
                             break
@@ -105,7 +108,8 @@ def parseEmail(fileName,value):
                     x=  f_contents.index('\n')
                     for i in  range(x,len(f_contents)):
                         body=body+ f_contents[i]
-                    emails['Body'].append(body)
+                    email['Body'].add(body)
                    
                     contents.append(body)
                           
+    return email
