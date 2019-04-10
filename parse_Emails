@@ -1,34 +1,58 @@
 import os
 import parse_Email
+import sys
+
 from collections import defaultdict
 emails=defaultdict(list) 
 all_sent=['\\sent','\\_sent_mail','\\sent_items','\\_sent']
 def parse_Emails(folderName, value):
     file=os.listdir(folderName)
     for line in file:
+        temp=[]
+        temp2=[]
+        person=str(line)
         for directory in all_sent:
-            sent_mail=folderName+'\\'+directory
+            sent_mail=folderName+'\\'+line+directory
             if (not os.path.isdir(sent_mail)): 
 
-                print("no "+directory +" folder for:", folderName[34:])
+                #print("no "+directory +" folder for:", line)
 
                 continue
-            sent=os.listdir(sent_mail)
+            if (os.path.isdir(sent_mail)):
+                sent=os.listdir(sent_mail)
             
-            for email in sent:
-                #if((os.path.isfile(sent_mail +"\\"+email)):
-              u=parse_Email.parseEmail(sent_mail +"\\"+email,value)
-              if u['Subject'] not None:
-                  emails['Subject'].append(u['Subject'])
-              if u['To'] not None:
-                  emails['To'].append(u['To'])
-              if u['From'] not None:
-                  emails['From'].append(set(u['From']))
-              if u['Body'] not None:
-                  emails['Body'].append(u['Body'])
-              if u['Date'] not None:
-                  emails['Date'].append(u['Date'])
-              print(emails)
+                for email in sent:
+                    #if((os.path.isfile(sent_mail +"\\"+email)):
+                 
+                  u=parse_Email.parseEmail(sent_mail +"\\"+email,value)
+                  print(u['To'])
+                 
+                 
+                 
+                  if len(u['Subject']) > 0:
+                      emails['Subject'].append(u['Subject'][0])
+                      
+                  if len(u['To'])> 0:
+                      for item in u['To']:
+                          temp.append(item)
+                      if len(u['From']) > 0:
+                              for item in u['From']:
+                                  temp2.append(u['From'])
+                  
+                      
+                      
+                  if len(u['Body']) >0:
+                      emails['Body'].append(u['Body'])
+                  if len(u['Date'])>0:
+                      emails['Date'].append(u['Date'])
+                  
+        emails['To'].append(temp)     
+        if len(temp2) > 0:
+            temp2=tuple(temp2)
+            temp2=set(temp2)
+            temp2=list(temp2)
+            emails['From'].append(temp2)
+                      
     #return emails
        
     
