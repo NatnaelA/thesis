@@ -1,0 +1,19 @@
+import os
+
+import sys
+import parse_Emails
+from collections import defaultdict
+edge=defaultdict(list) 
+def generate_EgdeList(folderName):
+    
+   p=parse_Emails.parse_Emails(folderName,['From','To'])
+   edge['From']=(p['From'])
+   edge['To']=(p['To'])
+   
+    
+   for i in range(0,len(edge['From'])):
+        for y in range(0,len(edge['From'][i])):
+            edge['edgeList'].append(edge['From'][i][y]+', '+edge['To'][i][y])
+      
+    
+    
