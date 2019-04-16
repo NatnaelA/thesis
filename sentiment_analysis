@@ -1,0 +1,26 @@
+import os
+
+import sys
+import parse_Emails
+from textblob import TextBlob
+
+from collections import defaultdict
+scores=defaultdict(list)
+def sent_analysis(folderName,value):
+    if type(value) is not list and 'Date' not in value:
+       value= [value]
+       value.append('Date')
+    if type(value) is list and 'Date' not in value:
+        value.append('Date')
+    p=parse_Emails.parse_Emails(folderName,value)
+    if 'Subject' and 'Body' in value:
+        text=p['Subject']+p['Body']
+        blob_for_Subject_and_body=TextBlob(text)
+        scores[p['Date']].append(blob_for_Subject_and_body)
+    elif 'Body' in value and 'Subject' not in value:
+        blob_for_body=TextBlob(p['Body'])
+        scores[p['Date']].append(blob_for_body)
+    elif 'Body' not in value and 'Subject' in value:
+        blob_for_subject=TextBlob(p['Subject'])
+        scores[p['Date']].append(blob_for_subject)
+
