@@ -13,44 +13,72 @@ larg_pair=[]
 subject=[]
 contents=[]
 test=[]
+flag2=None
 flag=None
+
 from collections import defaultdict
 email = defaultdict(list)
 
 from datetime import datetime
 month={1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'}
 def parseEmail(fileName,value):
+    
     email.clear()
     if value is None:
        value=['Subject','Date','To', 'From','Body']
     
-    
+#    if('start_date' not in value):
+#
+#        start_date=datetime.strptime( '1, 1, 1998','%d, %m, %Y')
+#
+# 
+#
+#    if('end_date' not in value):
+#
+#        end_date=datetime.strptime('31, 12, 2002','%d, %m, %Y')
     for item in value:
-        
+        global flag2
+        global flag
         if type(item)==dict and 'Start_Date' in item and 'End_Date' in item :
             print('it goes here1')
             temp_start=item['Start_Date'].split()
             temp_end=item['End_Date'].split()
-            item['Start_Date']=', '.join(temp_start)
-            item['End_Date']=', '.join(temp_end)
+           
+            if (flag2)==None:
+                temp_start=item['Start_Date'].split()
+                temp_end=item['End_Date'].split()
+                item['Start_Date']=', '.join(temp_start)
+                item['End_Date']=', '.join(temp_end)
+                flag2=True
             start_date=datetime.strptime( item['Start_Date'],'%d, %m, %Y')
             end_date=datetime.strptime( item['End_Date'],'%d, %m, %Y')
+            
             flag=True
             break
             
         elif type(item)==dict and'Start_Date' in item and 'End_Date' not in item:
+          
             print('it goes here2')
             print(item['Start_Date'])
-            temp_start=item['Start_Date'].split()
-            item['Start_Date']=', '.join(temp_start)
+            
+            
+            if flag2==None:
+                temp_start=item['Start_Date'].split()
+                item['Start_Date']=', '.join(temp_start)
+                flag2=True
             start_date=datetime.strptime( item['Start_Date'],'%d, %m, %Y')
             end_date=datetime.strptime('31, 12, 2002','%d, %m, %Y')
             flag=True
             break
         elif type(item)==dict and 'Start_Date' not in item and 'End_Date' in item:
+            
             print('it goes here3')
-            temp_end=item['End_Date'].split()
-            item['End_Date']=', '.join(temp_end)
+           
+            
+            if flag2==None:
+                temp_end=item['End_Date'].split()
+                item['End_Date']=', '.join(temp_end)
+                flag2=True
             start_date=datetime.strptime( '1,1,1998','%d, %m, %Y')
             end_date=datetime.strptime(item['End_Date'],'%d, %m, %Y')
             flag=True
@@ -63,7 +91,7 @@ def parseEmail(fileName,value):
             
     with open(fileName,'r') as f:
              f_contents=f.readlines()
-             print (start_date,end_date)   
+               
             
              
              blocks=f_contents[1].split()
