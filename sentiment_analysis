@@ -4,23 +4,69 @@ import sys
 import parse_Emails
 from textblob import TextBlob
 
-from collections import defaultdict
-scores=defaultdict(list)
-def sent_analysis(folderName,value):
-    if type(value) is not list and 'Date' not in value:
-       value= [value]
-       value.append('Date')
-    if type(value) is list and 'Date' not in value:
-        value.append('Date')
-    p=parse_Emails.parse_Emails(folderName,value)
-    if 'Subject' and 'Body' in value:
-        text=p['Subject']+p['Body']
-        blob_for_Subject_and_body=TextBlob(text)
-        scores[p['Date']].append(blob_for_Subject_and_body)
-    elif 'Body' in value and 'Subject' not in value:
-        blob_for_body=TextBlob(p['Body'])
-        scores[p['Date']].append(blob_for_body)
-    elif 'Body' not in value and 'Subject' in value:
-        blob_for_subject=TextBlob(p['Subject'])
-        scores[p['Date']].append(blob_for_subject)
 
+def sent_analysis(folderName,value):
+    sent_analysis.scores=[]
+    test=[]
+    
+    p=parse_Emails.parse_Emails(folderName,value)
+    if 'Subject' in value and 'Body' in value and 'Date' not in value:
+        
+        for item in p['Subject']:
+            blob_for_subject=TextBlob(item)
+           
+            sent_analysis.scores.append(blob_for_subject.sentiment.polarity)
+        for i in range(0,len(p['Body'])):
+            
+                blob_for_body=TextBlob(p['Body'][i][0])
+                sent_analysis.scores.append(blob_for_body.sentiment.polarity)
+    elif 'Subject' in value and 'Body' in value and 'Date' in value:
+        
+        for i in range(0,len(p['Subject'])):
+            blob_for_subject=TextBlob(p['Subject'][i])
+            
+            
+            test.append(blob_for_subject.sentiment.polarity)
+            test.append(p['Date'][i])
+            sent_analysis.scores.append(test)
+            test=[]
+        for i in range(0,len(p['Body'])):
+            
+                blob_for_body=TextBlob(p['Body'][i][0])
+                
+                test.append(blob_for_body.sentiment.polarity)
+                test.append(p['Date'][i])
+                sent_analysis.scores.append(test)
+                test=[]
+    elif 'Body' in value and 'Subject' not in value and 'Date' not in value:
+        
+        for i in range(0,len(p['Body'])):
+            
+                
+                blob_for_body=TextBlob(p['Body'][i][0])
+                sent_analysis.scores.append(blob_for_body.sentiment.polarity)
+    elif 'Body' in value and 'Subject' not in value and 'Date' in value:
+            
+            for i in range(0,len(p['Body'])):
+                
+                    blob_for_body=TextBlob(p['Body'][i][0])
+                    
+                    test.append(blob_for_body.sentiment.polarity)
+                    test.append(p['Date'][i])
+                    sent_analysis.scores.append(test)
+                    test=[]
+    elif 'Body' not in value and 'Subject' in value and 'Date' not in value:
+        for item in p['Subject']:
+            
+            blob_for_subject=TextBlob(item)
+            sent_analysis.scores.append(blob_for_subject.sentiment.polarity)
+    elif 'Body' not in value and 'Subject' in value and 'Date' in value:
+        for i in range(0,len(p['Subject'])):
+            blob_for_subject=TextBlob(p['Subject'][i])
+            test.append(blob_for_subject.sentiment.polarity)
+            test.append(p['Date'][i])
+            sent_analysis.scores.append(test)
+            test=[]
+    
+              
+  
