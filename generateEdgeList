@@ -3,17 +3,17 @@ import os
 import sys
 import parse_Emails
 from collections import defaultdict
-edge=defaultdict(list) 
+
 def generate_EgdeList(folderName):
-    
+   generate_EgdeList.edge=defaultdict(list)  
    p=parse_Emails.parse_Emails(folderName,['From','To'])
-   edge['From']=(p['From'])
-   edge['To']=(p['To'])
+   generate_EgdeList.edge['From']=(p['From'])
+   generate_EgdeList.edge['To']=(p['To'])
    
     
-   for i in range(0,len(edge['From'])):
-        for y in range(0,len(edge['From'][i])):
-            edge['edgeList'].append(edge['From'][i][y]+', '+edge['To'][i][y])
+   for i in range(0,len(generate_EgdeList.edge['From'])):
+        for y in range(0,len(generate_EgdeList.edge['From'][i])):
+            generate_EgdeList.edge['edgeList'].append(generate_EgdeList.edge['From'][i][y]+', '+generate_EgdeList.edge['To'][i][y])
       
     
     
