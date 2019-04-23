@@ -3,17 +3,20 @@ import parse_Email
 import sys
 
 from collections import defaultdict
-emails=defaultdict(list) 
-all_sent=['\\sent','\\_sent_mail','\\sent_items','\\_sent']
-_from=[]
-_to=[]
-if os.name == 'posix' :
-    all_sent = list(map(lambda x: x.replace('\\','/'), all_sent))
+
+
+
+
 def parse_Emails(folderName, value):
+    parse_Emails.emails=defaultdict(list) 
+    
     file=os.listdir(folderName)
+    parse_Emails.all_sent=['\\sent','\\_sent_mail','\\sent_items','\\_sent']
+    if os.name == 'posix' :
+        parse_Emails.all_sent = list(map(lambda x: x.replace('\\','/'), parse_Emails.all_sent))
     for line in file:
        
-        for directory in all_sent:
+        for directory in parse_Emails.all_sent:
             if os.name == 'posix' :
                 sent_mail=folderName+'/'+line+directory
             else:
@@ -30,32 +33,33 @@ def parse_Emails(folderName, value):
                     #if((os.path.isfile(sent_mail +"\\"+email)):
                   if os.name == 'posix' :
                        u=parse_Email.parseEmail(sent_mail +"/"+email,value)
+                       
                   else:
                        u=parse_Email.parseEmail(sent_mail +"\\"+email,value)
+                       
                   
+                 
+                 
                   
-                 
-                 
-                 
                   if len(u['Subject']) > 0:
-                      emails['Subject'].append(u['Subject'][0])
+                      parse_Emails.emails['Subject'].append(u['Subject'][0])
                       
                   if len(u['To'])>0 or len(u['From'])>0:
-                      emails['To'].append(u['To'])
-                      emails['From'].append(u['From'])
+                      parse_Emails.emails['To'].append(u['To'])
+                      parse_Emails.emails['From'].append(u['From'])
                      
                    
                       
 
         
                   if len(u['Body']) >0:
-                      emails['Body'].append(u['Body'])
+                      parse_Emails.emails['Body'].append(u['Body'])
                   if len(u['Date'])>0:
-                      emails['Date'].append(u['Date'])
+                      parse_Emails.emails['Date'].append(u['Date'])
                   
         
         
-    return emails
+    return parse_Emails.emails
        
     
        
