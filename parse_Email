@@ -6,24 +6,19 @@ Created on Fri Mar 22 19:40:28 2019
 """
 
 
-to=[]
-From=[]
-date=[]
-larg_pair=[]
-subject=[]
-contents=[]
-test=[]
-flag2=None
-flag=None
+
+
 
 from collections import defaultdict
-email = defaultdict(list)
+
 
 from datetime import datetime
-month={1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'}
 def parseEmail(fileName,value):
-    
-    email.clear()
+    parseEmail.month={1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'}
+    parseEmail.email = defaultdict(list)
+    parseEmail.flag2=None
+    parseEmail.flag=None
+    #parseEmail.email.clear()
     if value is None:
        value=['Subject','Date','To', 'From','Body']
     
@@ -37,23 +32,22 @@ def parseEmail(fileName,value):
 #
 #        end_date=datetime.strptime('31, 12, 2002','%d, %m, %Y')
     for item in value:
-        global flag2
-        global flag
+       
         if type(item)==dict and 'Start_Date' in item and 'End_Date' in item :
             print('it goes here1')
             temp_start=item['Start_Date'].split()
             temp_end=item['End_Date'].split()
            
-            if (flag2)==None:
+            if (parseEmail.flag2)==None:
                 temp_start=item['Start_Date'].split()
                 temp_end=item['End_Date'].split()
                 item['Start_Date']=', '.join(temp_start)
                 item['End_Date']=', '.join(temp_end)
-                flag2=True
+                parseEmail.flag2=True
             start_date=datetime.strptime( item['Start_Date'],'%d, %m, %Y')
             end_date=datetime.strptime( item['End_Date'],'%d, %m, %Y')
             
-            flag=True
+            parseEmail.flag=True
             break
             
         elif type(item)==dict and'Start_Date' in item and 'End_Date' not in item:
@@ -62,28 +56,28 @@ def parseEmail(fileName,value):
             print(item['Start_Date'])
             
             
-            if flag2==None:
+            if parseEmail.flag2==None:
                 temp_start=item['Start_Date'].split()
                 item['Start_Date']=', '.join(temp_start)
-                flag2=True
+                parseEmail.flag2=True
             start_date=datetime.strptime( item['Start_Date'],'%d, %m, %Y')
             end_date=datetime.strptime('31, 12, 2002','%d, %m, %Y')
-            flag=True
+            parseEmail.flag=True
             break
         elif type(item)==dict and 'Start_Date' not in item and 'End_Date' in item:
             
             print('it goes here3')
            
             
-            if flag2==None:
+            if parseEmail.flag2==None:
                 temp_end=item['End_Date'].split()
                 item['End_Date']=', '.join(temp_end)
-                flag2=True
+                parseEmail.flag2=True
             start_date=datetime.strptime( '1,1,1998','%d, %m, %Y')
             end_date=datetime.strptime(item['End_Date'],'%d, %m, %Y')
-            flag=True
+            parseEmail.flag=True
             break
-    if flag == None:
+    if parseEmail.flag == None:
             
             start_date=datetime.strptime( '1, 1, 1998','%d, %m, %Y')
             end_date=datetime.strptime('31, 12, 2002','%d, %m, %Y')
@@ -98,7 +92,7 @@ def parseEmail(fileName,value):
              for thing in blocks: 
                  for i in range(1,13):
                             
-                     if thing == month[i]:
+                     if thing == parseEmail.month[i]:
                                     
                          blocks[3]=str(i)
                          temp_date=', '.join(blocks[2:5])
@@ -108,9 +102,9 @@ def parseEmail(fileName,value):
              
              r=3
              if (email_date>=start_date and email_date<=end_date):
-                 pairs=[]
+                
                  if('Date' in value):
-                         email['Date'].append(email_date)
+                         parseEmail.email['Date'].append(email_date)
                          
                          
                  if 'To' or 'From' in value:
@@ -131,21 +125,21 @@ def parseEmail(fileName,value):
                                        
                                            f_contents[2]=f_contents[2].strip('\n')
                                            f_contents[2]=f_contents[2].replace('From: ','')
-                                           From.append(f_contents[2])
-                                           pairs.append(f_contents[2])
+                                           
+                                           
                                            
                                            employee=employee.strip()
                                            employee=employee.replace('To: ','')
-                                           to.append(employee)
-                                           pairs.append(employee)
+                                          
+                                           
                                            if 'To' in value:
-                                               email['To'].append(employee)   
-                                           larg_pair.append(pairs)
+                                               parseEmail.email['To'].append(employee)   
                                            
                                            
-                                           pairs=[]
+                                           
+                                           
                                            if 'From' in value:
-                                               email['From'].append(f_contents[2])
+                                               parseEmail.email['From'].append(f_contents[2])
                                     
                                     
                                
@@ -154,8 +148,8 @@ def parseEmail(fileName,value):
                     for line in f_contents:
                         if 'Subject:' in line:
                            # line=line.replace("Subject: ", "")
-                            subject.append(line)
-                            email['Subject'].append(line)
+                            
+                            parseEmail.email['Subject'].append(line)
                             
                             
                             break
@@ -164,8 +158,8 @@ def parseEmail(fileName,value):
                     x=  f_contents.index('\n')
                     for i in  range(x,len(f_contents)):
                         body=body+ f_contents[i]
-                    email['Body'].append(body)
+                    parseEmail.email['Body'].append(body)
                    
-                    contents.append(body)
+                    
                           
-    return email
+    return parseEmail.email
