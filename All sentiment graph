@@ -26,5 +26,5 @@ for v in l:
 
 for i in l:
     plt.plot(x,y)
-    plt.xticks(rotation=60)
+    plt.xticks(rotation=90)
 
