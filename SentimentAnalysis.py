@@ -12,7 +12,7 @@ import parseEmail
 from textblob import TextBlob
 from collections import defaultdict
 
-def allsentimentAnalysis(folderName,value=['To', 'From'],all_sent=['sent','_sent_mail','sent_items','_sent'],start_date='1 1 1998',end_date='31 12 2002'):
+def allsentimentAnalysis(folderName,value=['Subject','Date','To', 'From','Body'],all_sent=['sent','_sent_mail','sent_items','_sent'],start_date='1 1 1998',end_date='31 12 2002'):
     """Return a list of sentiment analysis for all the emails
     
     
@@ -40,22 +40,33 @@ def allsentimentAnalysis(folderName,value=['To', 'From'],all_sent=['sent','_sent
     """
     file=os.listdir(folderName)
     allsentimentAnalysis.scores=defaultdict(list)
-    
+    body=[]
+    subject=[]
     if(type(all_sent) is not list):
         all_sent=[all_sent]    
     for item in file:
         if os.name == 'posix' :
            
             sentForUser = userSentAnalysis(folderName+'/'+item,value,all_sent,start_date,end_date)
-            
+            allsentimentAnalysis.scores['Body'].append(sentForUser['Body'])
+            allsentimentAnalysis.scores['Subject'].append(sentForUser['Subject'])
+            print(userSentAnalysis(folderName+'/'+item,value,all_sent,start_date,end_date))
         else:
            
             sentForUser = userSentAnalysis(folderName+'\\'+item,value,all_sent,start_date,end_date)
-        
+            body.append(sentForUser['Body'])
+            subject.append(sentForUser['Subject'])
+            
         #allsentimentAnalysis.scores=allsentimentAnalysis.scores+sentForUser
     
-    
-    return allsentimentAnalysis.scores
+    allsentimentAnalysis.scores['Body']= body [0]
+    for i in range ( 1, len(body)):
+        allsentimentAnalysis.scores['Body']=allsentimentAnalysis.scores['Body']+body[i]
+    for i in range ( 1, len(subject)):
+        allsentimentAnalysis.scores['Subject']=allsentimentAnalysis.scores['Subject']+subject[i]
+        
+        
+    return  allsentimentAnalysis.scores
 def userSentAnalysis(folderName,value=['Subject','Date','To', 'From','Body'],all_sent=['sent','_sent_mail','sent_items','_sent'],start_date='1 1 1998',end_date='31 12 2002'):
     """Return a list of sentiment analysis for a user
     
@@ -84,7 +95,7 @@ def userSentAnalysis(folderName,value=['Subject','Date','To', 'From','Body'],all
    
     p=parseEmail.parseUserEmails(folderName,value,all_sent)
     if 'Subject' in value and 'Body' in value and 'Date' not in value:
-        
+        print (1)
         for item in p['Subject']:
             blob_for_subject=TextBlob(item)
            
@@ -94,13 +105,13 @@ def userSentAnalysis(folderName,value=['Subject','Date','To', 'From','Body'],all
                 blob_for_body=TextBlob(p['Body'][i][0])
                 userSentAnalysis.scores['Body'].append(blob_for_body.sentiment.polarity)
     elif 'Subject' in value and 'Body' in value and 'Date' in value:
-        
+        print (2)
         for i in range(0,len(p['Subject'])):
             blob_for_subject=TextBlob(p['Subject'][i])
             
             
             test.append(blob_for_subject.sentiment.polarity)
-            test.append(p['Date'][i])
+            test.append(p['Date'][i][0])
             userSentAnalysis.scores['Subject'].append(test)
             test=[]
         for i in range(0,len(p['Body'])):
@@ -113,32 +124,34 @@ def userSentAnalysis(folderName,value=['Subject','Date','To', 'From','Body'],all
                 userSentAnalysis.scores['Body'].append(test)
                 test=[]
     elif 'Body' in value and 'Subject' not in value and 'Date' not in value:
-        
+        print (3)
         for i in range(0,len(p['Body'])):
             
                 
                 blob_for_body=TextBlob(p['Body'][i][0])
                 userSentAnalysis.scores['Body'].append(blob_for_body.sentiment.polarity)
     elif 'Body' in value and 'Subject' not in value and 'Date' in value:
-            
+            print (4)
             for i in range(0,len(p['Body'])):
                 
                     blob_for_body=TextBlob(p['Body'][i][0])
                     
                     test.append(blob_for_body.sentiment.polarity)
-                    test.append(p['Date'][i])
+                    test.append(p['Date'][i][0])
                     userSentAnalysis.scores['Body'].append(test)
                     test=[]
     elif 'Body' not in value and 'Subject' in value and 'Date' not in value:
+        print (5)
         for item in p['Subject']:
             
             blob_for_subject=TextBlob(item)
             userSentAnalysis.scores['Subject'].append(blob_for_subject.sentiment.polarity)
     elif 'Body' not in value and 'Subject' in value and 'Date' in value:
+        print (6)
         for i in range(0,len(p['Subject'])):
             blob_for_subject=TextBlob(p['Subject'][i])
             test.append(blob_for_subject.sentiment.polarity)
-            test.append(p['Date'][i])
+            test.append(p['Date'][i][0])
             userSentAnalysis.scores['Subject'].append(test)
             test=[]
     
