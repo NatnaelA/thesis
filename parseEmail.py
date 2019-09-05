@@ -46,7 +46,7 @@ def parseSingleEmail(fileName,value=['Subject','Date','To', 'From','Body'],start
 
             
             
-    with open(fileName,'r', encoding= 'UTF 16') as f:
+    with open(fileName,'r', encoding= 'cp1252') as f:
              f_contents=f.readlines()
                
             
