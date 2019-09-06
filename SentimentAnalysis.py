@@ -11,6 +11,8 @@ import sys
 import parseEmail
 from textblob import TextBlob
 from collections import defaultdict
+import matplotlib as plt
+import matplotlib.pyplot as plt
 
 def allsentimentAnalysis(folderName,value=['Subject','Date','To', 'From','Body'],all_sent=['sent','_sent_mail','sent_items','_sent'],start_date='1 1 1998',end_date='31 12 2002'):
     """Return a list of sentiment analysis for all the emails
@@ -95,7 +97,7 @@ def userSentAnalysis(folderName,value=['Subject','Date','To', 'From','Body'],all
    
     p=parseEmail.parseUserEmails(folderName,value,all_sent)
     if 'Subject' in value and 'Body' in value and 'Date' not in value:
-        print (1)
+        
         for item in p['Subject']:
             blob_for_subject=TextBlob(item)
            
@@ -105,7 +107,9 @@ def userSentAnalysis(folderName,value=['Subject','Date','To', 'From','Body'],all
                 blob_for_body=TextBlob(p['Body'][i][0])
                 userSentAnalysis.scores['Body'].append(blob_for_body.sentiment.polarity)
     elif 'Subject' in value and 'Body' in value and 'Date' in value:
-        print (2)
+        p['Subject']=set(p['Subject'])
+        p['Subject']=list(p['Subject'])
+        
         for i in range(0,len(p['Subject'])):
             blob_for_subject=TextBlob(p['Subject'][i])
             
@@ -124,14 +128,14 @@ def userSentAnalysis(folderName,value=['Subject','Date','To', 'From','Body'],all
                 userSentAnalysis.scores['Body'].append(test)
                 test=[]
     elif 'Body' in value and 'Subject' not in value and 'Date' not in value:
-        print (3)
+        
         for i in range(0,len(p['Body'])):
             
                 
                 blob_for_body=TextBlob(p['Body'][i][0])
                 userSentAnalysis.scores['Body'].append(blob_for_body.sentiment.polarity)
     elif 'Body' in value and 'Subject' not in value and 'Date' in value:
-            print (4)
+            
             for i in range(0,len(p['Body'])):
                 
                     blob_for_body=TextBlob(p['Body'][i][0])
@@ -141,19 +145,125 @@ def userSentAnalysis(folderName,value=['Subject','Date','To', 'From','Body'],all
                     userSentAnalysis.scores['Body'].append(test)
                     test=[]
     elif 'Body' not in value and 'Subject' in value and 'Date' not in value:
-        print (5)
+        
         for item in p['Subject']:
             
             blob_for_subject=TextBlob(item)
             userSentAnalysis.scores['Subject'].append(blob_for_subject.sentiment.polarity)
     elif 'Body' not in value and 'Subject' in value and 'Date' in value:
-        print (6)
+        
         for i in range(0,len(p['Subject'])):
             blob_for_subject=TextBlob(p['Subject'][i])
             test.append(blob_for_subject.sentiment.polarity)
             test.append(p['Date'][i][0])
             userSentAnalysis.scores['Subject'].append(test)
             test=[]
+            
+
+    
     
     return userSentAnalysis.scores          
-  
+def graphForUser(folderName,value=['Subject','Date','To', 'From','Body'],all_sent=['sent','_sent_mail','sent_items','_sent'],start_date='1 1 1998',end_date='31 12 2002', graphType='line'):
+    graphForUser.userSentScores=userSentAnalysis(folderName, value, all_sent, start_date, end_date)
+    values=[]
+    newlist=[]
+    if ('Subject' not in value and 'Body' in value):
+        values = set(map(lambda x:(x[1].year,x[1].month), graphForUser.userSentScores['Body']))
+        if graphType=='line':
+            newlist = [[(y[0],y[1]) for y in graphForUser.userSentScores['Body'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+        elif graphType=='boxplot':
+            boxlist = [[y[0] for y in graphForUser.userSentScores['Body'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+                
+    elif ('Subject'  in value and 'Body' not in value):
+            values = set(map(lambda x:(x[1].year,x[1].month), graphForUser.userSentScores['Subject']))
+            if graphType=='line':
+                newlist = [[(y[0],y[1]) for y in graphForUser.userSentScores['Subject'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+            elif graphType=='boxplot':
+                boxlist = [[y[0] for y in graphForUser.userSentScores['Subject'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+                
+            
+    elif ('Subject'  in value and 'Body' in value):
+            
+
+            values = set(map(lambda x:(x[1].year,x[1].month), graphForUser.userSentScores['Body']))
+            if graphType=='line':
+                newlist = [[(y[0],y[1]) for y in graphForUser.userSentScores['Body'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+                drawLineGraph(values,newlist)
+            elif graphType=='boxplot':
+                boxlist = [[y[0] for y in graphForUser.userSentScores['Body'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+                drawBoxPlot(boxlist)
+            
+            values = set(map(lambda x:(x[1].year,x[1].month), graphForUser.userSentScores['Subject']))
+            if graphType=='line':
+                newlist = [[(y[0],y[1]) for y in graphForUser.userSentScores['Subject'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+            elif graphType=='boxplot':
+                boxlist = [[y[0] for y in graphForUser.userSentScores['Subject'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+                
+    if graphType =='line':
+        drawLineGraph(values,newlist)
+    elif graphType=='boxplot':
+        drawBoxPlot(boxlist)
+def graphForAll(folderName,value=['Subject','Date','To', 'From','Body'],all_sent=['sent','_sent_mail','sent_items','_sent'],start_date='1 1 1998',end_date='31 12 2002', graphType='line'):
+    graphForAll.allSentScores=allsentimentAnalysis(folderName, value, all_sent, start_date, end_date)
+    values=None
+    newlist=None
+    boxlist=None
+    if ('Subject' not in value and 'Body' in value):
+        values = set(map(lambda x:(x[1].year,x[1].month), graphForAll.allSentScores['Body']))
+        if graphType=='line':
+            newlist = [[(y[0],y[1]) for y in graphForAll.allSentScores['Body'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+        elif graphType=='boxplot':
+            boxlist = [[y[0] for y in graphForAll.allSentScores['Body'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+                
+    elif ('Subject'  in value and 'Body' not in value):
+            values = set(map(lambda x:(x[1].year,x[1].month), graphForAll.allSentScores['Subject']))
+            if graphType=='line':
+                newlist = [[(y[0],y[1]) for y in graphForAll.allSentScores['Subject'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+            elif graphType=='boxplot':
+                boxlist = [[y[0] for y in graphForAll.allSentScores['Subject'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+                
+    elif ('Subject'  in value and 'Body' in value):
+            values = set(map(lambda x:(x[1].year,x[1].month), graphForAll.allSentScores['Body']))
+            if graphType=='line':
+                newlist = [[(y[0],y[1]) for y in graphForAll.allSentScores['Body'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+                drawLineGraph(values,newlist)
+            elif graphType=='boxplot':
+                boxlist = [[y[0] for y in graphForAll.allSentScores['Body'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+                drawBoxPlot(boxlist)
+            
+            values = set(map(lambda x:(x[1].year,x[1].month), graphForAll.allSentScores['Subject']))
+            if graphType=='line':
+                newlist = [[(y[0],y[1]) for y in graphForAll.allSentScores['Subject'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+            elif graphType=='boxplot':
+                boxlist = [[y[0] for y in graphForAll.allSentScores['Subject'] if (y[1].month==x[1] and y[1].year==x[0] )] for x in values]
+                
+    if graphType =='line':
+        drawLineGraph(values,newlist)
+    elif graphType=='boxplot':
+        drawBoxPlot(boxlist)
+def drawLineGraph(values, newlist):
+
+    l=set()
+    y=[]
+    x=[]
+    for i in newlist:
+        val=0
+        for c in i:
+    
+            val=val+c[0]
+        l.add(((c[1].year, c[1].month),val/len(i)))
+    
+
+    l=sorted(list(l))
+    for v in l:
+       y.append(v[1])
+       x.append(str(v[0]))
+    
+    
+    for i in l:
+        plt.plot(x,y)
+        plt.xticks(rotation=90)
+
+def drawBoxPlot(boxlist):
+    plt.boxplot(boxlist)
+    
