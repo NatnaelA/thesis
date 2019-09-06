@@ -45,83 +45,86 @@ def parseSingleEmail(fileName,value=['Subject','Date','To', 'From','Body'],start
     
 
             
-            
-    with open(fileName,'r', encoding= 'cp1252') as f:
-             f_contents=f.readlines()
-               
-            
-             
-             blocks=f_contents[1].split()
-             for thing in blocks: 
-                 for i in range(1,13):
-                            
-                     if thing == parseSingleEmail.month[i]:
-                                    
-                         blocks[3]=str(i)
-                         temp_date=', '.join(blocks[2:5])
-                         email_date=datetime.strptime(temp_date ,'%d, %m, %Y')
-                         
-                         
-             
-             r=3
-             if (email_date>=start_date and email_date<=end_date):
+    if (not os.path.isdir(fileName)):        
+        with open(fileName,'r', encoding= 'cp1252') as f:
+                 f_contents=f.readlines()
+                   
                 
-                 if('Date' in value):
-                         parseSingleEmail.email['Date'].append(email_date)
-                         
-                         
-                 if 'To' or 'From' in value:
-                        
-                        while(not("Subject:" in f_contents[r])):
-                               
-                              
-                               
-                                    f_contents[r].strip('\t')
-                                    
-                                    
-                                    temp=f_contents[r].split(',')
-                                    
-                                    
-                                    for employee in temp:
-                                        employee = employee.strip()
-                                        if(employee != ''):
-                                       
-                                           f_contents[2]=f_contents[2].strip('\n')
-                                           f_contents[2]=f_contents[2].replace('From: ','')
-                                           
-                                           
-                                           
-                                           employee=employee.strip()
-                                           employee=employee.replace('To: ','')
-                                          
-                                           
-                                           if 'To' in value:
-                                               parseSingleEmail.email['To'].append(employee)   
-                                           
-                                           
-                                           
-                                           
-                                           if 'From' in value:
-                                               parseSingleEmail.email['From'].append(f_contents[2])
-                                    
-                                    
-                               
-                                    r=r+1
-                 if 'Subject' in value:
-                    for line in f_contents:
-                        if 'Subject:' in line:
-                           # line=line.replace("Subject: ", "")
+                 
+                 blocks=f_contents[1].split()
+                 for thing in blocks: 
+                     for i in range(1,13):
+                                
+                         if thing == parseSingleEmail.month[i]:
+                                        
+                             blocks[3]=str(i)
+                             temp_date=', '.join(blocks[2:5])
+                             email_date=datetime.strptime(temp_date ,'%d, %m, %Y')
+                             
+                             
+                 
+                 r=3
+                 if (email_date>=start_date and email_date<=end_date):
+                    
+                     if('Date' in value):
+                             parseSingleEmail.email['Date'].append(email_date)
+                             
+                             
+                     if 'To' or 'From' in value:
                             
-                            parseSingleEmail.email['Subject'].append(line)
-                            
-                            
-                            break
-                 body=''
-                 if 'Body' in value:
-                    x=  f_contents.index('\n')
-                    for i in  range(x,len(f_contents)):
-                        body=body+ f_contents[i]
-                    parseSingleEmail.email['Body'].append(body)
+                            while(not("Subject:" in f_contents[r])):
+                                   
+                                  
+                                   
+                                        f_contents[r].strip('\t')
+                                        
+                                        
+                                        temp=f_contents[r].split(',')
+                                        
+                                        
+                                        for employee in temp:
+                                            employee = employee.strip()
+                                            if(employee != ''):
+                                           
+                                               f_contents[2]=f_contents[2].strip('\n')
+                                               f_contents[2]=f_contents[2].replace('From: ','')
+                                               
+                                               
+                                               
+                                               employee=employee.strip()
+                                               employee=employee.replace('To: ','')
+                                              
+                                               
+                                               if 'To' in value:
+                                                   parseSingleEmail.email['To'].append(employee)   
+                                               
+                                               
+                                               
+                                               
+                                               if 'From' in value:
+                                                   parseSingleEmail.email['From'].append(f_contents[2])
+                                        
+                                        
+                                   
+                                        r=r+1
+                     if 'Subject' in value:
+                        for line in f_contents:
+                            if 'Subject:' in line:
+                                line=line.replace("Subject: ", "").replace("Re: ", "").replace("RE: ", "").replace("FW: ", "").replace("FW:", "").replace("Re:", "").replace("Subject:", "").replace("RE:", "")
+                                
+                                
+                                line=line.strip('\n')
+                                
+                                parseSingleEmail.email['Subject'].append(line)
+                                
+                                
+                                break
+                     body=''
+                     if 'Body' in value:
+                        x=  f_contents.index('\n')
+                        for i in  range(x,len(f_contents)):
+                            body=body+ f_contents[i]
+                        parseSingleEmail.email['Body'].append(body)
                    
                     
                           
